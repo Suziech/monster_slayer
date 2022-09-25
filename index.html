@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue Basics</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://unpkg.com/vue@next" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1>몬스터와 싸우기</h1>
+    </header>
+    <div id="game">
+      <section id="monster" class="container">
+        <h2>몬스터 에너지</h2>
+        <div class="healthbar">
+          <div class="healthbar__value" :style="monsterBarStyles"></div>
+        </div>
+      </section>
+      <section id="player" class="container">
+        <h2>당신의 에너지</h2>
+        <div class="healthbar">
+          <div class="healthbar__value" :style="playerBarStyles"></div>
+        </div>
+      </section>
+      <section class="container" v-if="winner">
+        <h2>게임 끝!</h2>
+        <h3 v-if="winner === 'monster'">몬스터에게 졌습니다. 상우님이 기뻐합니다.<img class="sangwoo" src="images/sangwoo.png"/></h3>
+        <h3 v-else-if="winner === 'player'">축하합니다! 몬스터를 물리쳤어요! 오늘 치킨 사먹으세요! 🍗<img class="sangwoo" src="images/monster.png"/></h3>
+        <h3 v-else="winner === 'draw'">아아.. 비겼네요</h3>
+        <button @click="startGame">게임 다시 시작하기</button>
+      </section>
+      <section id="controls" v-else>
+        <button @click="attackMonster">공격</button>
+        <button :disabled="mayUseSpecialAttack" @click="specialAttackMonster">
+          특별공격
+        </button>
+        <button @click="healPlayer">치료하기</button>
+        <button @click="surrender">항복하기</button>
+      </section>
+      <section id="log" class="container">
+        <h2>Battle Log</h2>
+        <ul>
+          <li v-for="logMessage in logMessages">
+            <span
+              :class="{'log--player':logMessage.actionBy === 'player', 'log--monster':logMessage.actionBy === 'monster'}"
+              >{{logMessage.actionBy === 'player' ? '사용자' : '몬스터'}}</span
+            >&nbsp;
+            <span v-if="logMessage.actionType ==='heal'"
+              >스스로 치료합니다<span class="log--heal"
+                >{{logMessage.actionValue}}</span
+              ></span
+            >
+            <span v-else
+              >가 공격했습니다 <span class="log--damage"
+                >{{logMessage.actionValue}}</span
+              ></span
+            >
+          </li>
+        </ul>
+      </section>
+    </div>
+  </body>
+</html>
